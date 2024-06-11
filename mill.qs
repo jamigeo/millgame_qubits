@@ -1,214 +1,172 @@
-
 namespace QuantumMill {
-    open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Intrinsic;
-    open Microsoft.Quantum.Canon;
 
-    // Define a type for the board (array of integers)
+    // Definiere den Typ für das Spielbrett (ein Array von Integern)
     newtype Board = Int[];
 
-    // Define a type for a position on the board
+    // Definiere den Typ für eine Position auf dem Spielbrett
     newtype Position = Int;
 
-    // Define a type for a mill (a tuple of three positions)
+    // Definiere den Typ für eine Mühle (ein Tupel von drei Positionen)
     newtype Mill = (Position, Position, Position);
 
-    // List of all possible mills on the board
-   function PossibleMills() : (Int, Int, Int)[] {
-    return [
-        // Horizontal mills
-        (0, 1, 2), (3, 4, 5), (6, 7, 8),
-        (9, 10, 11), (12, 13, 14), (15, 16, 17),
-        (18, 19, 20), (21, 22, 23),
-        // Vertical mills
-        (0, 9, 21), (3, 10, 18), (6, 11, 15),
-        (1, 4, 7), (16, 19, 22), (8, 12, 17),
-        (5, 13, 20), (2, 14, 23)
-    ];
-}
-
-    // Check if a position is part of a mill
-
-function IsPartOfMill(board : Qubit[], pos: Int, player : Result) : Bool {
-    for (a, b, c) in PossibleMills() {
-        if (pos == a or pos == b or pos == c) {
-            // Measure qubits to check their values
-            let valueA = M(board[a]); // Measure and reset to |0⟩ state
-            Reset(board[a]); 
-            let valueB = M(board[b]); // Measure and reset to |0⟩ state
-            Reset(board[b]);
-            let valueC = M(board[c]); // Measure and reset to |0⟩ state
-            Reset(board[c]); 
-
-            if (valueA == player and valueB == player and valueC == player) {
-                return true; // Return true if a mill is found
+    // Zähle die Anzahl der Stücke eines Spielers auf dem Spielbrett
+    operation CountPieces(board : Int[], player : Int) : Int {
+        mutable count = 0;
+        for (position) in board {
+            if (position == player) {
+                set count += 1;
             }
         }
-    }
-    return false; // Explicitly return false if no mill is found
-}
-
-// Check if a move creates a mill
-function CreatesMill(board: Qubit[], player: Result, pos: Int) : Bool {
-    return IsPartOfMill(board, pos, player);
-}
-
-
-
-// Remove an opponent's piece from the board
-operation RemoveOpponentPiece(board: Qubit[], opponent: Result) : Int[] {
-    mutable newBoard = [];
-    mutable removed = false;
-
-    // Copy the board into newBoard as integers
-    for (i) in 0..Length(board) {
-    set newBoard w/= i <- (M(board[i]) == opponent) ? 1 | 0; 
-}
-
-    // Attempt to remove a non-mill piece
-    for (i) in 0..Length(board) - 1 {
-        if newBoard[i] == 1 and not IsPartOfMill(board, i, opponent) {
-            set newBoard w/= i <- 0;
-            set removed = true;
-            return newBoard; // Return immediately after removing a non-mill piece
-        }
+        return count;
     }
 
-    // If no non-mill pieces were found, remove a mill piece
-    if not removed {
-        for (i) in 0..Length(board) - 1 {
-            if newBoard[i] == 1 {
-                set newBoard w/= i <- 0;
-                return newBoard; // Return immediately after removing a mill piece
-            }
-        }
-    }
-
-    return newBoard;
-}
-
-operation CountPieces(board : Int[], player : Int) : Int {
-    mutable count = 0;
-    for (position) in IndexRange(board) {
-        if (board[position] == player) {
-            set count += 1;
-        }
-    }
-    return count;
-}
-
-    // Generate possible moves for a given player using superposition
-    operation GeneratePossibleMovesUsingSuperposition(board: Int[], player: Int) : Qubit[] {
-        // Determine the opponent player
+    // Generiere mögliche Züge für einen Spieler
+    operation GeneratePossibleMoves(board: Int[], player: Int) : Int[][] {
+        // Bestimme den Gegenspieler
         let opponent = player == 1 ? 2 | 1;
 
-        // Find all possible moves
-        mutable possibleMoves = [];
-
-        // Count the number of pieces the player has
+        // Bestimme die Anzahl der Stücke des Spielers auf dem Brett
         let pieceCount = CountPieces(board, player);
 
-        use qubits = Qubit[24];
-        // Initialize qubits to superposition, Yeah
-        ApplyToEach(H, qubits);
+        // Finde alle möglichen Züge
+        mutable possibleMoves = [];
 
-            for (i) in 0..23 {
-                // Measure each qubit to find possible empty positions
-                if (M(qubits[i]) == Zero and board[i] == 0) {
-                    // Create a copy of the board
-                    mutable newBoard = board;
+        // Wenn der Spieler weniger als 3 Stücke hat, kann er zu jeder leeren Position ziehen
+        if (pieceCount <= 3) {
+            for i in 0..23 {
+                if (board[i] == player) {
+                    for j in 0..23 {
+                        if (board[j] == 0) {
+                            // Erzeuge eine Kopie des Spielbretts
+                            mutable newBoard = board;
 
-                    // Place the player's piece in the current position
-                    set newBoard w/= i <- player;
+                            // Bewege das Stück des Spielers zur neuen Position
+                            set newBoard w/= i <- 0;
+                            set newBoard w/= j <- player;
 
-                    // Check if this move creates a mill
-                    if (CreatesMill(newBoard, player, i)) {
-                        // Remove an opponent's piece if a mill is created
-                        let boardAfterRemoval = RemoveOpponentPiece(newBoard, opponent);
-                        set possibleMoves += [boardAfterRemoval];
-                    } else {
-                        // Append the new board state to possibleMoves
-                        set possibleMoves += [newBoard];
-                    }
-                }
-            }
-
-            if (pieceCount <= 3) {
-                // Player can move to any empty position if they have 3 or fewer pieces
-                for i in 0..23 {
-                    if (board[i] == player) {
-                        for (j in 0..23) {
-                            if (board[j] == 0) {
-                                // Create a copy of the board
-                                mutable newBoard = board;
-                                // Move the player's piece to the new position
-                                set newBoard w/= i <- 0;
-                                set newBoard w/= j <- player;
-
-                                // Check if this move creates a mill
-                                if (CreatesMill(newBoard, player, j)) {
-                                    // Remove an opponent's piece if a mill is created
-                                    let boardAfterRemoval = RemoveOpponentPiece(newBoard, opponent);
-                                    set possibleMoves += [boardAfterRemoval];
-                                } else {
-                                    // Append the new board state to possibleMoves
-                                    set possibleMoves += [newBoard];
-                                }
+                            // Überprüfe, ob dieser Zug eine Mühle erzeugt
+                            if (CreatesMill(newBoard, player, j)) {
+                                // Entferne ein Stück des Gegners, falls eine Mühle erzeugt wird
+                                let boardAfterRemoval = RemoveOpponentPiece(newBoard, opponent);
+                                set possibleMoves += [boardAfterRemoval];
+                            } else {
+                                // Füge den neuen Spielbrettzustand zu den möglichen Zügen hinzu
+                                set possibleMoves += [newBoard];
                             }
                         }
                     }
                 }
             }
-
-            // Reset qubits to initial state
-            ApplyToEach(Reset, qubits);
         }
 
-        // Return the list of possible new board states
         return possibleMoves;
     }
 
-    // Classical function to display the board
-    function DisplayBoard(board: Board) : Unit {
-        Message("Board:");
-        let boardStr = "";
-        for (i in 0..Length(board) - 1) {
-            let piece = board[i];
-            let pieceStr = if piece == 0 { "." } elif piece == 1 { "X" } else { "O" };
-            boardStr += pieceStr + " ";
-            if i == 2 or i == 6 or i == 9 or i == 13 or i == 16 or i == 20 or i == 23 {
-                boardStr += "\n";
-            } else if i == 3 or i == 10 or i == 17 {
-                boardStr += "  ";
+    // Überprüfe, ob ein Zug eine Mühle erzeugt
+    operation CreatesMill(board: Int[], player: Int, pos: Int) : Bool {
+        for (a, b, c) in PossibleMills() {
+            if (pos == a or pos == b or pos == c) {
+                if (board[a] == player and board[b] == player and board[c] == player) {
+                    return true; // Eine Mühle wurde gefunden
+                }
             }
         }
-        Message(boardStr);
+        return false; // Keine Mühle gefunden
     }
 
-    // Entry point to test the GeneratePossibleMovesUsingSuperposition operation
+    // Entferne ein Stück des Gegners vom Spielbrett
+    operation RemoveOpponentPiece(board: Int[], opponent: Int) : Int[] {
+        mutable newBoard = board;
+        // Suche nach einem Stück des Gegners, das nicht Teil einer Mühle ist
+        for (i) in 0 .. Length(board) - 1 {
+            if (newBoard[i] == opponent and not IsPartOfMill(newBoard, i, opponent)) {
+                set newBoard w/= i <- 0;
+                return newBoard;
+            }
+        }
+        // Wenn kein Stück gefunden wurde, entferne ein beliebiges Stück des Gegners
+        for (i) in 0 .. Length(board) - 1 {
+            if (newBoard[i] == opponent) {
+                set newBoard w/= i <- 0;
+                return newBoard;
+            }
+        }
+        return newBoard;
+    }
+
+    // Überprüfe, ob eine Position Teil einer Mühle ist
+    function IsPartOfMill(board : Int[], pos: Int, player : Int) : Bool {
+        for (a, b, c) in PossibleMills() {
+            if (pos == a or pos == b or pos == c) {
+                if (board[a] == player and board[b] == player and board[c] == player) {
+                    return true; // Eine Mühle wurde gefunden
+                }
+            }
+        }
+        return false; // Keine Mühle gefunden
+    }
+
+    // Implementiere die Logik zum Generieren möglicher Mühlen
+    function PossibleMills() : (Int, Int, Int)[] {
+        // Implementiere die Logik zum Generieren möglicher Mühlen
+        // Zum Beispiel:
+        return [
+                // Horizontale Mühlen
+                (0, 1, 2), (3, 4, 5), (6, 7, 8),
+                (9, 10, 11), (12, 13, 14), (15, 16, 17),
+                (18, 19, 20), (21, 22, 23),
+                // Vertikale Mühlen
+                (0, 9, 21), (3, 10, 18), (6, 11, 15),
+                (1, 4, 7), (16, 19, 22), (8, 12, 17),
+                (5, 13, 20), (2, 14, 23)
+        ];
+    }
+
+    // Warte auf Benutzereingabe und steuere das Spiel entsprechend
+    operation WaitForUserInput() : Unit {
+    // Warte auf Benutzereingabe
+    let userInput = GetNextUserInput();
+
+    // Verarbeite die Benutzereingabe und aktualisiere das Spiel entsprechend
+    ProcessUserInput(userInput);
+
+    // Überprüfe, ob das Spiel beendet ist
+    let gameFinished = IsGameFinished();
+
+    if not gameFinished {
+        // Wenn das Spiel noch nicht beendet ist, warte erneut auf Benutzereingabe
+        WaitForUserInput();
+    }
+}
+
+
+    // Simuliere die Benutzereingabe (hier als Platzhalter)
+    function GetNextUserInput() : String {
+        // Hier könntest du die Implementierung einfügen, um die Benutzereingabe zu erhalten,
+        // z.B. von der Konsole oder einer GUI
+        return "Benutzereingabe";
+    }
+
+    // Verarbeite die Benutzereingabe und aktualisiere das Spiel entsprechend (hier als Platzhalter)
+    operation ProcessUserInput(input: String) : Unit {
+        // Hier könntest du die Implementierung einfügen, um die Benutzereingabe zu verarbeiten
+        // und das Spiel entsprechend zu aktualisieren
+        // Zum Beispiel:
+        Message($"Benutzereingabe: {input}");
+    }
+
+    // Überprüfe, ob das Spiel beendet ist (hier als Platzhalter)
+    function IsGameFinished() : Bool {
+        // Hier könntest du die Implementierung einfügen, um zu überprüfen, ob das Spiel beendet ist,
+        // z.B. durch Überprüfung auf Sieg oder Remis
+        return false;
+    }
+
+    // Einstiegspunkt des Programms
     @EntryPoint()
-    operation Main() : Unit {
-        // Initial empty board with 24 positions
-        let board = Board([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
-        // Generate and display moves for Player 1 (X)
-        Message("Player 1 (X) possible moves using superposition:");
-        let possibleMovesPlayer1 = GeneratePossibleMovesUsingSuperposition(board, 1);
-        for (newBoard in possibleMovesPlayer1) {
-            DisplayBoard(newBoard);
-            Message("----------------");
-        }
-
-        // Simulate a move by Player 1 (placing an X at position 0)
-        set board w/= 0 <- 1;
-
-        // Generate and display moves for Player 2 (O)
-        Message("Player 2 (O) possible moves using superposition:");
-        let possibleMovesPlayer2 = GeneratePossibleMovesUsingSuperposition(board, 2);
-        for (newBoard in possibleMovesPlayer2) {
-            DisplayBoard(newBoard);
-            Message("----------------");
-        }
+    operation EntryPoint() : Unit {
+        WaitForUserInput();
     }
-
+}
