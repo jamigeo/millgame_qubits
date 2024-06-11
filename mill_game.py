@@ -1,3 +1,7 @@
+import qsharp
+from Quantum.mill import QuantumMill
+from qsharp import Result
+
 from Microsoft.Quantum.Simulation import Resources
 from Microsoft.Quantum.Simulation.Core import CoreDriver
 
