@@ -1,123 +1,97 @@
-namespace QuantumMill {
-    open Microsoft.Quantum.Intrinsic;
+namespace NineMensMorris {
     open Microsoft.Quantum.Canon;
-    open Microsoft.Quantum.Convert;
-
-    // Definiere den Typ für das Spielbrett (ein Array von Qubits)
-    newtype Board = Qubit[];
-
-    // Definiere den Typ für eine Position auf dem Spielbrett
-    newtype Position = Int;
-
-    // Definiere den Typ für eine Mühle (ein Tupel von drei Positionen)
-    newtype Mill = (Position, Position, Position);
-
-    // Erzeuge ein Array mit allen möglichen Mühlen
-    operation mill() : (Int, Int, Int)[] {
-        return [
-            // Horizontale Mühlen
-            (0, 1, 2), (3, 4, 5), (6, 7, 8),
-            (9, 10, 11), (12, 13, 14), (15, 16, 17),
-            (18, 19, 20), (21, 22, 23),
-            // Vertikale Mühlen
-            (0, 9, 21), (3, 10, 18), (6, 11, 15),
-            (1, 4, 7), (16, 19, 22), (8, 12, 17),
-            (5, 13, 20), (2, 14, 23)
-        ];
+    open Microsoft.Quantum.Intrinsic;
+   
+    // Phase 1: Placing pieces
+    operation PlacePieceOnEmptyPoint (board : Qubit[], point : Int) : Unit {
+        if (M (board[point]) == Zero) {
+            X(board[point]);
+        } else {
+            Message($"The point {point} is not empty.");
+        }
     }
 
-    // Setze ein Stück eines Spielers auf dem Spielbrett
-    operation SetPiece(board : Qubit[], position : Int, player : Int) : Unit is Adj + Ctl {
-    if (player == 1) {
-        X(board[position]);
-    } else {
-        I(board[position]);
-    }
-}
-
-    // Entferne ein Stück vom Spielbrett
-    operation RemovePiece(board : Qubit[], position : Int) : Unit is Adj + Ctl {
-        X(board[position]);
-    }
-
-    // Überprüfe, ob eine Position besetzt ist
-    operation IsPositionOccupied(board : Qubit[], position : Int) : Bool {
-        use q = Qubit();
-        X(q);
-        Controlled X([board[position]], q);
-        return M(q) == One;
-    }
-
-    // Überprüfe, ob eine Mühle existiert
-    operation CheckMill(board : Qubit[], mill : (Int, Int, Int)) : Bool {
-    let (a, b, c) = mill;
-    mutable result = true;
-    for (pos) in [a, b, c] {
-        set result = result and IsPositionOccupied(board, pos);
-    }
-    return result;
-}
-
-   operation GeneratePossibleMoves(board : Qubit[], player : Int) : (Qubit[], (Int, Int, Int))[] {
-    mutable possibleMoves = [];
-    for (pos) in 0..23 {
-        if (not IsPositionOccupied(board, pos)) {
-            mutable newBoard = board;
-            for (i) in 0..23 {
-                set newBoard w/= i <- board[i];
+    // Phase 2: Moving pieces
+    operation MovePieceToAdjacentPoint (board : Qubit[], from : Int, to : Int) : Unit {
+        if (M (board[from]) == One) {
+            if (M (board[to]) == Zero) {
+                X(board[to]);
+                X(board[from]);
+            } else {
+                Message($"The point {to} is not empty.");
             }
-            SetPiece(newBoard, pos, player);
-            for (mill) in mill() {
-                if (CheckMill(newBoard, mill)) {
-                    set possibleMoves += [(newBoard, mill)];
+        } else {
+            Message($"There is no piece to move at point {from}.");
+        }
+    }
+
+    // Phase 3: "Flying"
+    operation MovePieceToAnyEmptyPoint (board : Qubit[], from : Int, to : Int) : Unit {
+        if (M (board[from]) == One) {
+            if (M (board[to]) == Zero) {
+                X(board[to]);
+                X(board[from]);
+            } else {
+                Message($"The point {to} is not empty.");
+            }
+        } else {
+            Message($"There is no piece to move at point {from}.");
+        }
+    }
+    
+    // Game loop
+    operation PlayGame (board : Qubit[]) : Unit {
+        mutable phase = 1;
+        mutable player = 0;
+        
+        repeat {
+            set player = player == 0 ? 1 | 0;
+
+            if (phase == 1) {
+                // Place pieces
+                for (idx) in (0..8) {
+                    PlacePieceOnEmptyPoint(board, idx);
+                }
+            } elif (phase == 2) {
+                // Move pieces to adjacent points
+                for (idx1) in 0..8 {
+                    for (idx2) in 0..8 {
+                        if (ArePointsAdjacent(idx1, idx2)) {
+                            MovePieceToAdjacentPoint(board, idx1, idx2);
+                        }
+                    }
+                }
+            } else {
+                // Move pieces to any empty point
+                for (idx1) in 0..8 {
+                    for (idx2) in 0..8 {
+                        MovePieceToAnyEmptyPoint(board, idx1, idx2);
+                    }
                 }
             }
+            set phase = phase == 3 ? 1 | phase + 1;
         }
-    }
-    return possibleMoves;
-}
-    // Warte auf Benutzereingabe und steuere das Spiel entsprechend
-    operation WaitForUserInput() : Unit {
-        // Warte auf Benutzereingabe
-        let userInput = GetNextUserInput();
-
-        // Verarbeite die Benutzereingabe und aktualisiere das Spiel entsprechend
-        ProcessUserInput(userInput);
-
-        // Überprüfe, ob das Spiel beendet ist
-        let gameFinished = IsGameFinished();
-
-        if not gameFinished {
-            // Wenn das Spiel noch nicht beendet ist, warte erneut auf Benutzereingabe
-            WaitForUserInput();
+        until (phase == 1)
+        fixup {
+            ResetAll(board);
         }
     }
 
-    // Simuliere die Benutzereingabe (hier als Platzhalter)
-    function GetNextUserInput() : String {
-        // Hier könntest du die Implementierung einfügen, um die Benutzereingabe zu erhalten,
-        // z.B. von der Konsole oder einer GUI
-        return "Benutzereingabe";
+    // Helper function to check if two points are adjacent
+    function ArePointsAdjacent (p1 : Int, p2 : Int) : Bool {
+        mutable adjacent = false;
+        
+        // Add your logic to determine if two points are adjacent
+
+        return adjacent;
     }
 
-    // Verarbeite die Benutzereingabe und aktualisiere das Spiel entsprechend (hier als Platzhalter)
-    operation ProcessUserInput(input : String) : Unit {
-        // Hier könntest du die Implementierung einfügen, um die Benutzereingabe zu verarbeiten
-        // und das Spiel entsprechend zu aktualisieren
-        // Zum Beispiel:
-        Message($"Benutzereingabe: {input}");
-    }
-
-    // Überprüfe, ob das Spiel beendet ist (hier als Platzhalter)
-    function IsGameFinished() : Bool {
-        // Hier könntest du die Implementierung einfügen, um zu überprüfen, ob das Spiel beendet ist,
-        // z.B. durch Überprüfung auf Sieg oder Remis
-        return false;
-    }
-
-    // Einstiegspunkt des Programms
+    // EntryPoint markiert den Startpunkt des Programms
     @EntryPoint()
-    operation EntryPoint() : Unit {
-        WaitForUserInput();
+    operation Main() : Unit {
+        // Hier kannst du deine Boardinitialisierung oder andere Logik hinzufügen
+        // Rufe die Funktion PlayGame auf, um das Spiel zu starten
+        use board = Qubit[24];
+        PlayGame(board);
     }
 }
