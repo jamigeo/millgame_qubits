@@ -1,9 +1,92 @@
 namespace NineMensMorris {
+   
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Convert;
 
+    /// Implementation of the game "Nine Men's Morris" on Q#
+    ///
+    /// Quantum circuit diagram:
+    ///
+    /// 1)  |0>---/24---[@]---[H]---------  // Initialize board qubits
+    ///                  |
+    /// 2)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 3)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 4)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 5)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 6)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 7)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 8)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 9)  |0>---------(+)---[X]---------
+    ///                  |
+    /// 10) |0>---------(+)---[X]---------
+    ///                  |
+    /// 11) |0>---------(+)---[X]---------
+    ///                  |
+    /// 12) |0>---------(+)---[X]---------
+    ///                  |
+    /// 13) |0>---------(+)---[X]---------
+    ///                  |
+    /// 14) |0>---------(+)---[X]---------
+    ///                  |
+    /// 15) |0>---------(+)---[X]---------
+    ///                  |
+    /// 16) |0>---------(+)---[X]---------
+    ///                  |
+    /// 17) |0>---------(+)---[X]---------
+    ///                  |
+    /// 18) |0>---------(+)---[X]---------
+    ///                  |
+    /// 19) |0>---------(+)---[X]---------
+    ///                  |
+    /// 20) |0>---------(+)---[X]---------
+    ///                  |
+    /// 21) |0>---------(+)---[X]---------
+    ///                  |
+    /// 22) |0>---------(+)---[X]---------
+    ///                  |
+    /// 23) |0>---------(+)---[X]---------
+    ///                  |
+    /// 24) |0>---------(+)---[X]---------
+    ///                  |
+    /// 25) |0>---/-2---[H]---[@]---------------  // Initialize additional qubits
+    ///                        |
+    /// 26) |0>---/-1---[H]---[@]---------------  // Initialize additional qubits
+    ///
 
+    operation GameCircuit (board : Qubit[]) : Unit {
+    // Allocate additional qubits for encoding possible moves
+    use possibleMoves = Qubit[GetNumQubitsForMoves()];
+
+    // Initialize the qubits
+    ApplyToEachA(H, board);
+    ApplyToEachA(H, possibleMoves);
+
+    // Encode the game state and possible moves
+    EncodeGameState(board);
+    EncodePossibleMoves(possibleMoves);
+
+    // Apply the evaluation function circuit
+    EvaluationFunction(board, possibleMoves);
+
+    // Perform amplitude amplification
+    AmplitudeAmplification(board, possibleMoves);
+
+    // Measure the amplified state to obtain the best move
+    MeasureAndResetAll(possibleMoves);
+    // Update the board state with the best move
+    UpdateBoardState(board, possibleMoves);
+
+    // Reset and release the qubits
+    ResetAll(possibleMoves);
+    }
     function GetNumQubitsForMoves() : Int {
     // There are 24 positions (crosspoints) on the Nine Man's Morris board
     let numPositions = 24;
@@ -178,32 +261,6 @@ namespace NineMensMorris {
         return 0; // Placeholder
     }
 
-    operation GameCircuit (board : Qubit[]) : Unit {
-    // Allocate additional qubits for encoding possible moves
-    use possibleMoves = Qubit[GetNumQubitsForMoves()];
-
-    // Initialize the qubits
-    ApplyToEachA(H, board);
-    ApplyToEachA(H, possibleMoves);
-
-    // Encode the game state and possible moves
-    EncodeGameState(board);
-    EncodePossibleMoves(possibleMoves);
-
-    // Apply the evaluation function circuit
-    EvaluationFunction(board, possibleMoves);
-
-    // Perform amplitude amplification
-    AmplitudeAmplification(board, possibleMoves);
-
-    // Measure the amplified state to obtain the best move
-    MeasureAndResetAll(possibleMoves);
-    // Update the board state with the best move
-    UpdateBoardState(board, possibleMoves);
-
-    // Reset and release the qubits
-    ResetAll(possibleMoves);
-    }
     @EntryPoint()
     operation Main() : Unit {
     use board = Qubit[24];
