@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("mill_game")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+397154caeac075f4eae9a182018162645bb57cd1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2f5268e2d53ed55ec2748a654b7774b8166ada2")]
 [assembly: System.Reflection.AssemblyProductAttribute("mill_game")]
 [assembly: System.Reflection.AssemblyTitleAttribute("mill_game")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

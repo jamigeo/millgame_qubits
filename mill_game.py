@@ -1,5 +1,5 @@
 import qsharp
-from mill import NineMensMorris
+from Quantum.mill import NineMensMorris
 from qsharp import Result
 
 from Microsoft.Quantum.Simulation import Resources
