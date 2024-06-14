@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NineMensMorris")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93d408546deb724cc519c26330b89183a2cd4c46")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+449875ef0548e907e41acba2e9d2e623bad1accd")]
 [assembly: System.Reflection.AssemblyProductAttribute("NineMensMorris")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NineMensMorris")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
