@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("mill_game")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("NineMensMorris")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ef8500149785f71b207c44aa48305832730b8e6")]
-[assembly: System.Reflection.AssemblyProductAttribute("mill_game")]
-[assembly: System.Reflection.AssemblyTitleAttribute("mill_game")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5c88d3d8d724a5880d6584948f18d10b7a85d17")]
+[assembly: System.Reflection.AssemblyProductAttribute("NineMensMorris")]
+[assembly: System.Reflection.AssemblyTitleAttribute("NineMensMorris")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Von der MSBuild WriteCodeFragment-Klasse generiert.

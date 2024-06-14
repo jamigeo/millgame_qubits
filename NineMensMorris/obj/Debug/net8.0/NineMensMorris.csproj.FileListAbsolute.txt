@@ -1,0 +1,15 @@
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\bin\Debug\net8.0\NineMensMorris.exe
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\bin\Debug\net8.0\NineMensMorris.deps.json
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\bin\Debug\net8.0\NineMensMorris.runtimeconfig.json
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\bin\Debug\net8.0\NineMensMorris.dll
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\bin\Debug\net8.0\NineMensMorris.pdb
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.AssemblyInfoInputs.cache
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.AssemblyInfo.cs
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.csproj.CoreCompileInputs.cache
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.sourcelink.json
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.dll
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\refint\NineMensMorris.dll
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.pdb
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.genruntimeconfig.cache
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\ref\NineMensMorris.dll

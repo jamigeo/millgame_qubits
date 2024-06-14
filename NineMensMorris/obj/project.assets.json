@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jan-m\\Desktop\\Mühle\\mill_game\\mill_game.csproj",
-      "projectName": "mill_game",
-      "projectPath": "C:\\Users\\jan-m\\Desktop\\Mühle\\mill_game\\mill_game.csproj",
+      "projectUniqueName": "C:\\Users\\jan-m\\Desktop\\Mühle\\NineMensMorris\\NineMensMorris.csproj",
+      "projectName": "NineMensMorris",
+      "projectPath": "C:\\Users\\jan-m\\Desktop\\Mühle\\NineMensMorris\\NineMensMorris.csproj",
       "packagesPath": "C:\\Users\\jan-m\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jan-m\\Desktop\\Mühle\\mill_game\\obj\\",
+      "outputPath": "C:\\Users\\jan-m\\Desktop\\Mühle\\NineMensMorris\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\jan-m\\NuGet.Config",
@@ -39,6 +39,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -60,7 +65,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.106/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

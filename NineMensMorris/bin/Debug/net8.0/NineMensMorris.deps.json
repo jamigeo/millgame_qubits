@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "NineMensMorris/1.0.0": {
+        "runtime": {
+          "NineMensMorris.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NineMensMorris/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
