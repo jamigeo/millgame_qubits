@@ -13,3 +13,6 @@ C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\refint\NineMensMor
 C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.pdb
 C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.genruntimeconfig.cache
 C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\ref\NineMensMorris.dll
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\bin\Debug\net8.0\CsvHelper.dll
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMensMorris.csproj.AssemblyReference.cache
+C:\Users\jan-m\Desktop\Mühle\NineMensMorris\obj\Debug\net8.0\NineMens.FC617886.Up2Date

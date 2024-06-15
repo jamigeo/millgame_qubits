@@ -1,0 +1,14 @@
+:: files ::
+NineMensMorris.qs
+:: qsim ::
+:: references ::
+C:\Users\jan-m\.nuget\packages\microsoft.quantum.qsharp.foundation\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.QSharp.Foundation.dll
+C:\Users\jan-m\.nuget\packages\microsoft.quantum.runtime.core\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Runtime.Core.dll
+C:\Users\jan-m\.nuget\packages\microsoft.quantum.simulators\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Simulation.Common.dll
+C:\Users\jan-m\.nuget\packages\microsoft.quantum.simulators\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Simulation.QCTraceSimulatorRuntime.dll
+C:\Users\jan-m\.nuget\packages\microsoft.quantum.simulators\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Simulators.dll
+C:\Users\jan-m\.nuget\packages\microsoft.quantum.targets.interfaces\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Targets.Interfaces.dll
+C:\Users\jan-m\.nuget\packages\newtonsoft.json\12.0.3\lib\netstandard2.0\Newtonsoft.Json.dll
+C:\Users\jan-m\.nuget\packages\numsharp\0.20.5\lib\netstandard2.0\NumSharp.Core.dll
+:: command ::
+dotnet "C:\Users\jan-m\.nuget\packages\microsoft.quantum.development.kit\0.18.2106148911\build\../tools/qsc/Microsoft.Quantum.CSharpGeneration.App.dll"  --qst "NineMensMorris" --input "NineMensMorris.qs" --references "C:\Users\jan-m\.nuget\packages\microsoft.quantum.qsharp.foundation\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.QSharp.Foundation.dll" "C:\Users\jan-m\.nuget\packages\microsoft.quantum.runtime.core\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Runtime.Core.dll" "C:\Users\jan-m\.nuget\packages\microsoft.quantum.simulators\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Simulation.Common.dll" "C:\Users\jan-m\.nuget\packages\microsoft.quantum.simulators\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Simulation.QCTraceSimulatorRuntime.dll" "C:\Users\jan-m\.nuget\packages\microsoft.quantum.simulators\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Simulators.dll" "C:\Users\jan-m\.nuget\packages\microsoft.quantum.targets.interfaces\0.18.2106148911\lib\netstandard2.1\Microsoft.Quantum.Targets.Interfaces.dll" "C:\Users\jan-m\.nuget\packages\newtonsoft.json\12.0.3\lib\netstandard2.0\Newtonsoft.Json.dll" "C:\Users\jan-m\.nuget\packages\numsharp\0.20.5\lib\netstandard2.0\NumSharp.Core.dll" --output "obj/qsharp/"

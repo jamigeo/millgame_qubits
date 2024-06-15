@@ -61,6 +61,38 @@ namespace NineMensMorris {
     operation Main() : Unit {
         use board = Qubit[24];
         GameCircuit(board);
+        let move = GetPlayerInput(board);
+    }
+
+    operation GetPlayerInput(board : Qubit[]) : Int {
+    mutable playerMove = -1;
+
+    // Loop until valid input is received
+    repeat {
+        let input = InputMessage("Enter your move (0-23): ");
+        if (IsValidMove(board, input)) {
+            set playerMove = input;
+        } else {
+            Message("Invalid move. Please enter a number between 0 and 23.");
+        }
+    } until (playerMove != -1); 
+
+    return playerMove;
+    }
+
+    // Helper function to simulate user input (for demonstration)
+    function InputMessage(message : String) : Int {
+        // Replace this with actual user input mechanism if integrating with Python or other host
+        return MessageWithReturnValue(message);
+    }
+
+    // Helper function to simulate message output and return user input (for demonstration)
+    function MessageWithReturnValue(message : String) : Int {
+        // Replace with actual logic to interact with user input in your host environment
+        // For demonstration purposes, let's use a hard-coded input
+        let userInput = 5; // Replace this with actual user input logic
+        Message(message + $" (Simulated Input: {userInput})");
+        return userInput;
     }
 
     // Main game circuit
@@ -236,11 +268,8 @@ namespace NineMensMorris {
     ResetAll(board);
     }
 
-
     operation IsValidMove(board : Qubit[], move : Int) : Bool {
-        // Hier sollte die Logik für die Gültigkeit eines Zuges implementiert werden
-        // Beispiel: Überprüfung, ob die Position noch nicht besetzt ist
-        return not IsPositionOccupied(move, board);
+    return move >= 0 and move < Length(board);
     }
 
     // Function to show the board state

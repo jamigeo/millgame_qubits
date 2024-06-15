@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace NineMensMorris
 {
@@ -6,76 +9,85 @@ namespace NineMensMorris
     {
         static void Main(string[] args)
         {
-            // Initialize the quantum simulator
-            using (var sim = new QuantumSimulator())
+            string csvFilePath = "data.csv";
+
+            // Schreiben der Daten in die CSV-Datei
+            using (var writer = new StreamWriter(csvFilePath))
+            using (var csv = new CsvWriter(writer, new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
             {
-                Console.WriteLine("Quantum simulator initialized.");
+                HasHeaderRecord = true,
+            }))
+            {
+                csv.WriteField("Operation");
+                csv.WriteField("ExecutionTime");
+                csv.NextRecord();
 
-                // Run the main operation
-                RunMainOperation(sim);
-
-                // Run the example game operation
-                RunExampleNineMensMorrisGame(sim);
+                using (var sim = new Simulator())
+                {
+                    WriteOperationData(sim, csv, "MainOperation");
+                    WriteOperationData(sim, csv, "ExampleNineMensMorrisGame");
+                }
             }
 
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+            Console.WriteLine($"Data exported to {csvFilePath}");
         }
 
-        static void RunMainOperation(QuantumSimulatorBase simulator)
+        static void WriteOperationData(SimulatorBase simulator, CsvWriter csv, string operationName)
         {
-            Console.WriteLine("\nRunning MainOperation...");
-            MainOperation.Run(simulator);
-            Console.WriteLine("MainOperation completed.");
+            var startTime = DateTime.Now;
+
+            // Simuliere die Operation (hier nur als Beispiel)
+            if (operationName == "MainOperation")
+            {
+                MainOperation.Run(simulator);
+            }
+            else if (operationName == "ExampleNineMensMorrisGame")
+            {
+                ExampleNineMensMorrisGame.Run(simulator);
+            }
+
+            var endTime = DateTime.Now;
+            var executionTime = (endTime - startTime).TotalMilliseconds;
+
+            csv.WriteField(operationName);
+            csv.WriteField(executionTime);
+            csv.NextRecord();
         }
 
-        static void RunExampleNineMensMorrisGame(QuantumSimulatorBase simulator)
+        // Definition der Klassen SimulatorBase, Simulator, MainOperation, ExampleNineMensMorrisGame wie zuvor
+        // ...
+
+        public abstract class SimulatorBase : IDisposable
         {
-            Console.WriteLine("\nRunning ExampleNineMensMorrisGame...");
-            ExampleNineMensMorrisGame.Run(simulator);
-            Console.WriteLine("ExampleNineMensMorrisGame completed.");
+            public abstract void Dispose();
         }
-    }
 
-    public abstract class QuantumSimulatorBase : IDisposable
-    {
-        public abstract void Dispose();
-    }
-
-    internal class QuantumSimulator : QuantumSimulatorBase
-    {
-        public override void Dispose()
+        internal class Simulator : SimulatorBase
         {
-            Console.WriteLine("Quantum simulator disposed.");
+            public override void Dispose()
+            {
+                Console.WriteLine("Simulator disposed.");
+            }
         }
-    }
 
-    public class MainOperation : Operation<QuantumSimulatorBase, QVoid>
-    {
-        public static Func<QuantumSimulatorBase, QVoid, QVoid> Body => (__in, _) =>
+        public class MainOperation
         {
-            Console.WriteLine("MainOperation ausgeführt.");
-            return QVoid.Instance;
-        };
-
-        internal static void Run(QuantumSimulatorBase simulator)
-        {
-            Body(simulator, QVoid.Instance);
+            internal static void Run(SimulatorBase simulator)
+            {
+                // Hier können Sie die Logik der MainOperation implementieren
+                Console.WriteLine("MainOperation executed.");
+                System.Threading.Thread.Sleep(1000); // Beispiel für eine Verzögerung
+            }
         }
-    }
 
-    public class Operation<T1, T2> { }
-
-    internal class ExampleNineMensMorrisGame
-    {
-        internal static void Run(QuantumSimulatorBase simulator)
+        internal class ExampleNineMensMorrisGame
         {
-            Console.WriteLine("Example Nine Men's Morris game running...");
+            internal static void Run(SimulatorBase simulator)
+            {
+                // Hier können Sie die Logik des Beispielspiels implementieren
+                Console.WriteLine("Example Nine Men's Morris game running...");
+                System.Threading.Thread.Sleep(500); // Beispiel für eine Verzögerung
+            }
         }
-    }
-
-    public class QVoid
-    {
-        public static QVoid Instance { get; } = new QVoid();
     }
 }

@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "5514a24ydKk=",
+  "dgSpecHash": "8e+U1g/BiWw=",
   "success": true,
   "projectFilePath": "C:\\Users\\jan-m\\Desktop\\Mühle\\NineMensMorris\\NineMensMorris.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\jan-m\\.nuget\\packages\\csvhelper\\32.0.3\\csvhelper.32.0.3.nupkg.sha512"
+  ],
   "logs": []
 }
